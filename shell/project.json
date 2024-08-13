@@ -1,28 +1,31 @@
 {
-  "name": "demo-mfe2",
-  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "name": "shell",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "./src",
+  "sourceRoot": "shell/src",
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@nx/angular:webpack-browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/demo-mfe2",
-        "index": "./src/index.html",
-        "main": "./src/main.ts",
+        "outputPath": "dist/shell",
+        "index": "shell/src/index.html",
+        "main": "shell/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "tsconfig.app.json",
+        "tsConfig": "shell/tsconfig.app.json",
         "assets": [
           {
             "glob": "**/*",
-            "input": "public"
+            "input": "shell/public"
           }
         ],
-        "styles": ["./src/styles.css"],
-        "scripts": []
+        "styles": ["shell/src/styles.css"],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "shell/webpack.config.ts"
+        }
       },
       "configurations": {
         "production": {
@@ -52,13 +55,17 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@nx/angular:module-federation-dev-server",
+      "options": {
+        "port": 4200,
+        "publicHost": "http://localhost:4200"
+      },
       "configurations": {
         "production": {
-          "buildTarget": "demo-mfe2:build:production"
+          "buildTarget": "shell:build:production"
         },
         "development": {
-          "buildTarget": "demo-mfe2:build:development"
+          "buildTarget": "shell:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -66,20 +73,17 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "buildTarget": "demo-mfe2:build"
+        "buildTarget": "shell:build"
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": ["./src"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectName}"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "jest.config.app.ts"
+        "jestConfig": "shell/jest.config.ts"
       }
     }
   }
